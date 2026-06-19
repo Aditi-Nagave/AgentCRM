@@ -1,3 +1,4 @@
+# app/ai/models.py
 from pydantic import BaseModel
 
 class ClassificationResult(BaseModel):
