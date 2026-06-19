@@ -1,0 +1,161 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# =========================
+# FastAPI
+# =========================
+*.log
+logs/
+uvicorn.log
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Database
+# =========================
+*.db
+*.sqlite3
+
+# PostgreSQL dumps
+*.sql
+*.dump
+
+# =========================
+# Vector Database
+# =========================
+chroma_db/
+vector_store/
+faiss_index/
+*.faiss
+*.pkl
+
+# =========================
+# AI / ML
+# =========================
+models/
+checkpoints/
+embeddings/
+*.h5
+*.pt
+*.pth
+*.ckpt
+
+# =========================
+# Cache
+# =========================
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# PyCharm
+# =========================
+.idea/
+
+# =========================
+# React / Frontend
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build files
+build/
+dist/
+.next/
+out/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Testing
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+
+# =========================
+# Docker
+# =========================
+.dockerignore
+
+# =========================
+# Secrets
+# =========================
+secrets/
+credentials.json
+service-account.json
+openai_key.txt
+
+# =========================
+# Uploaded Files
+# =========================
+uploads/
+temp/
+tmp/
+
+# =========================
+# Generated Reports
+# =========================
+reports/
+exports/
+
+# =========================
+# Web Scraping Cache
+# =========================
+scraper_cache/
+web_cache/
+
+# =========================
+# Runtime Files
+# =========================
+*.pid
+*.seed
