@@ -30,6 +30,7 @@ def parse_llm_response(response_text):
 
         return {
             "category":"Unknown",
+            "customer_stage":"Unknown",
             "sentiment":"Neutral",
             "urgency":"Low",
             "requires_human":False,

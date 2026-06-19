@@ -9,17 +9,17 @@ client = Groq(
     api_key=settings.GROQ_API_KEY
 )
 
-def classify_email(subject, body):
+def classify_email(subject, body,thread_context):
 
     email_text = f"""
-Subject: {subject}
+        Subject: {subject}
 
-Body:
-{body}
-"""
+        Body:{body}
+    """
 
     prompt = CLASSIFICATION_PROMPT.format(
-        email=email_text
+        email=email_text,
+        thread_context=thread_context
     )
 
     response = client.chat.completions.create(

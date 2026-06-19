@@ -16,3 +16,5 @@ class ClassificationResult(BaseModel):
     is_security: bool
 
     is_spam: bool
+
+    customer_stage: str

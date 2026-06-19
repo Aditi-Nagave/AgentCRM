@@ -21,6 +21,8 @@ def ingest_email(db, payload):
     )
 
     analysis = process_email(
+             db,
+             payload.thread_id,
              payload.subject,
              payload.body
     )
@@ -51,7 +53,9 @@ def ingest_email(db, payload):
 
     is_spam=analysis["is_spam"],
 
-    is_security=analysis["is_security"]
+    is_security=analysis["is_security"],
+
+    customer_stage=analysis["customer_stage"]
 )
 
     db.add(email)

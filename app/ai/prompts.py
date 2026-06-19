@@ -2,40 +2,39 @@
 CLASSIFICATION_PROMPT = """
 You are an enterprise CRM analyst.
 
-Analyze the email.
+Previous conversation history:
 
-Classify:
+{thread_context}
 
-1. category
-2. sentiment
-3. urgency
-4. requires_human
-5. confidence
-6. is_security
-7. is_spam
+--------------------------------
 
-Possible Categories:
-
-- Complaint
-- Refund
-- Security
-- Billing
-- Sales
-- GDPR
-- Legal
-- Technical Support
-- General Inquiry
-
-Urgency:
-
-- Low
-- Medium
-- High
-- Critical
-
-Return ONLY JSON.
-
-EMAIL:
+Current Email:
 
 {email}
+
+--------------------------------
+
+Analyze the CURRENT email while considering
+the conversation history.
+
+Return ONLY a valid JSON object with these fields:
+
+category
+sentiment
+urgency
+requires_human
+confidence
+is_security
+is_spam
+customer_stage
+
+customer_stage options:
+
+- New Lead
+- Evaluation
+- Trial
+- Existing Customer
+- Expansion Opportunity
+- Churn Risk
+- Support Escalation
 """
