@@ -10,6 +10,10 @@ from app.rag.retriever import (
     retrieve_knowledge
 )
 
+from app.services.action_engine import (
+    process_action_engine
+)
+
 from app.services.spam_detector import detect_spam
 from app.services.security_detector import detect_security
 from app.services.urgency_detector import detect_urgency
@@ -42,12 +46,25 @@ def process_email(
                   query
         )
 
-        return classify_email(
+        classification = classify_email(
             subject,
             body,
             context,
             knowledge
         )
+
+        action_data = process_action_engine(
+            subject,
+            body,
+            classification,
+            knowledge
+        )
+
+        classification.update(
+            action_data
+        )
+
+        return classification
 
     except Exception as e:
 
@@ -77,5 +94,7 @@ def process_email(
 
             "customer_stage":"Unknown",
 
-            "recommended_action":"Manual Review Required"
+            "recommended_action":"Manual Review Required",
+
+            "draft_reply":"Thank you for contacting us. Your request has been received and will be reviewed shortly."
         }

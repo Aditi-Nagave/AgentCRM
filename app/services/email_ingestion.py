@@ -59,6 +59,8 @@ def ingest_email(db, payload):
 
     recommended_action=analysis["recommended_action"],
 
+    draft_reply=analysis["draft_reply"],
+
     knowledge_used=True
 )
 
