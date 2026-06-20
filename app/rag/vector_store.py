@@ -1,4 +1,4 @@
-# app/services/rag/vector_store.py
+# app/rag/vector_store.py
 import chromadb
 
 client = chromadb.PersistentClient(

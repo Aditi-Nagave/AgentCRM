@@ -6,7 +6,7 @@ from app.services.context_builder import (
     build_llm_context
 )
 
-from app.services.rag.retriever import (
+from app.rag.retriever import (
     retrieve_knowledge
 )
 

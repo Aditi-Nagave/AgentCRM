@@ -1,14 +1,23 @@
-from app.services.rag.retriever import (
-    retrieve_knowledge
-)
+# tests/test_rag.py
 
-query = """
-Customer wants refund after 45 days
-"""
+from app.rag.retriever import search_policies
 
-knowledge = retrieve_knowledge(
-    query
-)
+queries = [
 
-print("\nRetrieved Knowledge:\n")
-print(knowledge)
+    "Need refund after 45 days",
+
+    "Need pricing for nonprofit organization",
+
+    "Possible ransomware attack detected"
+
+]
+
+for q in queries:
+
+    print("\n================================")
+    print("QUERY:", q)
+    print("================================")
+
+    result = search_policies(q)
+
+    print(result)
