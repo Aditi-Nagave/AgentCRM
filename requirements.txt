@@ -8,3 +8,5 @@ alembic
 requests
 textblob
 groq
+sentence-transformers
+chromadb

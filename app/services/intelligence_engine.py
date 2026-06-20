@@ -6,8 +6,8 @@ from app.services.context_builder import (
     build_llm_context
 )
 
-from app.services.knowledge_service import (
-    load_all_policies
+from app.services.rag.retriever import (
+    retrieve_knowledge
 )
 
 from app.services.spam_detector import detect_spam
@@ -33,7 +33,14 @@ def process_email(
             history
         )
 
-        knowledge = load_all_policies()
+        query = f"""
+            Subject:{subject}
+            Body:{body}
+        """
+
+        knowledge = retrieve_knowledge(
+                  query
+        )
 
         return classify_email(
             subject,
