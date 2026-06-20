@@ -18,3 +18,5 @@ class ClassificationResult(BaseModel):
     is_spam: bool
 
     customer_stage: str
+
+    recommended_action: str

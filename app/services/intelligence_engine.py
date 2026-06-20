@@ -6,6 +6,10 @@ from app.services.context_builder import (
     build_llm_context
 )
 
+from app.services.knowledge_service import (
+    load_all_policies
+)
+
 from app.services.spam_detector import detect_spam
 from app.services.security_detector import detect_security
 from app.services.urgency_detector import detect_urgency
@@ -29,15 +33,22 @@ def process_email(
             history
         )
 
+        knowledge = load_all_policies()
+
         return classify_email(
             subject,
             body,
-            context
+            context,
+            knowledge
         )
 
     except Exception as e:
 
+        print("\n===================")
+        print("CLASSIFIER FAILED")
+        print(type(e))
         print(e)
+        print("===================\n")
 
         text = subject + " " + body
 
@@ -57,5 +68,7 @@ def process_email(
 
             "is_spam":detect_spam(subject, body),
 
-            "customer_stage":"Unknown"
+            "customer_stage":"Unknown",
+
+            "recommended_action":"Manual Review Required"
         }

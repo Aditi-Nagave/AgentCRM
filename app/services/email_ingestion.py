@@ -55,7 +55,11 @@ def ingest_email(db, payload):
 
     is_security=analysis["is_security"],
 
-    customer_stage=analysis["customer_stage"]
+    customer_stage=analysis["customer_stage"],
+
+    recommended_action=analysis["recommended_action"],
+
+    knowledge_used=True
 )
 
     db.add(email)

@@ -9,7 +9,7 @@ client = Groq(
     api_key=settings.GROQ_API_KEY
 )
 
-def classify_email(subject, body,thread_context):
+def classify_email(subject, body,thread_context,knowledge):
 
     email_text = f"""
         Subject: {subject}
@@ -19,7 +19,8 @@ def classify_email(subject, body,thread_context):
 
     prompt = CLASSIFICATION_PROMPT.format(
         email=email_text,
-        thread_context=thread_context
+        thread_context=thread_context,
+        knowledge=knowledge
     )
 
     response = client.chat.completions.create(
@@ -42,4 +43,9 @@ def classify_email(subject, body,thread_context):
     print(content)
     print("===========================\n")
 
-    return parse_llm_response(content)
+    parsed = parse_llm_response(content)
+
+    print("\nPARSED RESPONSE:")
+    print(parsed)
+
+    return parsed
