@@ -13,6 +13,13 @@ from app.rag.retriever import (
 from app.services.action_engine import (
     process_action_engine
 )
+from app.services.internal_detector import (
+    is_internal_email
+)
+
+from app.services.sentiment_service import (
+analyze_sentiment
+)
 
 from app.agent.planner import build_plan
 
@@ -25,12 +32,27 @@ from app.services.urgency_detector import detect_urgency
 
 def process_email(
         db,
+        sender,
         thread_id,
         subject,
         body
 ):
 
     try:
+        if is_internal_email(sender):
+            return { 
+                "category": "Internal",
+                "sentiment": "Neutral", 
+                "sentiment_score": 0, 
+                "urgency": "Low", 
+                "requires_human": False, 
+                "confidence": 1.0, 
+                "is_security": False, 
+                "is_spam": False, 
+                "customer_stage": "Internal", 
+                "recommended_action": "Route Internal Inbox", 
+                "draft_reply": "", "agent_logs": []
+                  }
 
         history = get_thread_context(
             db,
@@ -40,7 +62,7 @@ def process_email(
         context = build_llm_context(
             history
         )
-
+        print(context)
         query = f"""
             Subject:{subject}
             Body:{body}
@@ -50,12 +72,20 @@ def process_email(
                   query
         )
 
+        sentiment_data = analyze_sentiment( body )
+
         classification = classify_email(
             subject,
             body,
             context,
             knowledge
         )
+
+        classification[ "sentiment_score" ] = sentiment_data["score"]
+
+        if classification["confidence"] < 0.70: 
+            classification[ "requires_human" ] = True 
+            classification[ "escalation_reason" ] = "Low Confidence Classification"
 
         plan = build_plan(
                classification
@@ -92,25 +122,31 @@ def process_email(
 
         text = subject + " " + body
 
+        sentiment_data = analyze_sentiment( body )
+
         return {
 
             "category":"Unknown",
 
-            "sentiment":"Neutral",
+            "sentiment": sentiment_data["label"],
 
-            "urgency":detect_urgency(text),
+            "sentiment_score": sentiment_data["score"],
+
+            "urgency": detect_urgency(text),
 
             "requires_human":False,
 
-            "confidence":0,
+            "confidence":0.0,
 
             "is_security":detect_security(text),
 
-            "is_spam":detect_spam(subject, body),
+            "is_spam":detect_spam(sender, subject, body),
 
             "customer_stage":"Unknown",
 
             "recommended_action":"Manual Review Required",
 
-            "draft_reply":"Thank you for contacting us. Your request has been received and will be reviewed shortly."
-        }
+            "draft_reply":"Thank you for contacting us. Your request has been received and will be reviewed shortly.",
+
+            "agent_logs": []
+        }  

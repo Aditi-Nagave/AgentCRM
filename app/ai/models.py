@@ -1,5 +1,7 @@
 # app/ai/models.py
 from pydantic import BaseModel
+from typing import Dict, List, Optional
+
 
 class ClassificationResult(BaseModel):
 
@@ -7,9 +9,15 @@ class ClassificationResult(BaseModel):
 
     sentiment: str
 
+    sentiment_score: float
+
     urgency: str
 
     requires_human: bool
+
+    escalation_reason: Optional[str]
+
+    suggested_reply: Optional[str]
 
     confidence: float
 
@@ -20,3 +28,5 @@ class ClassificationResult(BaseModel):
     customer_stage: str
 
     recommended_action: str
+
+    detected_entities: Dict

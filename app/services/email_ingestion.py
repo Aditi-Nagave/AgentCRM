@@ -60,7 +60,7 @@ def ingest_email(db, payload):
 
     text = payload.subject + " " + body
 
-    is_spam = detect_spam( payload.subject, body )
+    is_spam = detect_spam(payload.sender, payload.subject, body )
     is_security = detect_security( text )
     urgency = detect_urgency( text )
     internal = is_internal_email( payload.sender )
@@ -68,6 +68,7 @@ def ingest_email(db, payload):
 
     analysis = process_email(
              db,
+             payload.sender,
              payload.thread_id,
              payload.subject,
              payload.body
@@ -92,6 +93,8 @@ def ingest_email(db, payload):
     urgency=urgency,
 
     priority_score=priority_score,
+
+    sentiment_score=analysis["sentiment_score"],
 
     sentiment=analysis["sentiment"],
 

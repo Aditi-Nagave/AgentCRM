@@ -1,20 +1,44 @@
 # app/services/spam_detector.py
+from app.services.sender_reputation import (
+    sender_reputation
+)
+
 SPAM_KEYWORDS = [
+
     "inheritance",
+
     "million usd",
+
     "claim your share",
+
     "seo",
+
     "click here",
+
     "limited offer"
 ]
 
-def detect_spam(subject, body):
 
-    text = (subject + " " + body).lower()
+def detect_spam(
+    sender,
+    subject,
+    body
+):
 
-    for word in SPAM_KEYWORDS:
+    text = (
 
-        if word in text:
+        subject + " " + body
+
+    ).lower()
+
+    for keyword in SPAM_KEYWORDS:
+
+        if keyword in text:
+
             return True
+
+    if sender_reputation(sender) == "Bad":
+
+        return True
 
     return False
