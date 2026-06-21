@@ -1,4 +1,5 @@
 # app/services/email_ingestion.py
+import json
 from app.models.email import Email
 from app.services.deduplication import is_duplicate
 from app.services.thread_service import create_thread_if_not_exists
@@ -60,6 +61,8 @@ def ingest_email(db, payload):
     recommended_action=analysis["recommended_action"],
 
     draft_reply=analysis["draft_reply"],
+
+    agent_log=json.dumps(analysis["agent_logs"]),
 
     knowledge_used=True
 )

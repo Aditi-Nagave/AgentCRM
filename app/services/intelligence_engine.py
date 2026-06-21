@@ -14,6 +14,10 @@ from app.services.action_engine import (
     process_action_engine
 )
 
+from app.agent.planner import build_plan
+
+from app.agent.executor import execute_plan
+
 from app.services.spam_detector import detect_spam
 from app.services.security_detector import detect_security
 from app.services.urgency_detector import detect_urgency
@@ -53,10 +57,22 @@ def process_email(
             knowledge
         )
 
-        action_data = process_action_engine(
+        plan = build_plan(
+               classification
+        )
+
+        agent_logs = execute_plan(
             subject,
             body,
-            classification,
+            plan
+        )
+
+        classification["agent_logs"] = agent_logs
+
+        action_data = process_action_engine(
+               subject,
+               body,
+               classification,
             knowledge
         )
 
