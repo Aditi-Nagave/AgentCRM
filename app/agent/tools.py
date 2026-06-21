@@ -92,3 +92,13 @@ def create_internal_ticket(title):
 
         "ticket": title
     }
+
+def generate_gdpr_acknowledgement():
+
+    return {
+
+        "status": "Prepared",
+
+        "message":
+        "Your GDPR request has been received and is under review."
+    }

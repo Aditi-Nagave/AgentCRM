@@ -2,7 +2,9 @@
 from app.agent.tool_registry import (
     validate_plan
 )
-
+from app.agent.agent_guardrails import (
+    enforce_agent_guardrails
+)
 
 def build_plan(classification):
 
@@ -38,6 +40,30 @@ def build_plan(classification):
             "create_internal_ticket"
         ]
 
+    elif (
+
+        "sla" in category.lower()
+
+        or
+
+        "breach" in category.lower()
+    ):
+
+        plan = [
+
+            "get_thread_history",
+
+            "search_knowledge_base",
+
+            "check_account_status",
+
+            "flag_for_legal",
+
+            "draft_reply",
+
+            "escalate_to_human"
+       ]
+
     # GDPR
 
     elif (
@@ -57,7 +83,9 @@ def build_plan(classification):
 
             "flag_for_legal",
 
-            "draft_reply",
+            "create_internal_ticket",
+
+            "generate_gdpr_acknowledgement",
 
             "escalate_to_human"
         ]
@@ -140,4 +168,11 @@ def build_plan(classification):
             "draft_reply"
         ]
 
-    return validate_plan(plan)
+    plan = validate_plan(plan)
+
+    plan = enforce_agent_guardrails(
+    classification,
+    plan
+    )
+
+    return plan

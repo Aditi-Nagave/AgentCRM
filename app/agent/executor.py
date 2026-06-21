@@ -163,4 +163,18 @@ def execute_plan(
                 )
             )
 
+        elif step == "generate_gdpr_acknowledgement":
+
+            result = generate_gdpr_acknowledgement()
+
+            logs.append(
+                create_log(
+                    "Prepare GDPR acknowledgement",
+                    step,
+                    str(result),
+                    "Continue"
+                )
+            )
+
+
     return logs
