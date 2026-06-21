@@ -1,22 +1,33 @@
 # scripts/email_stream_simulator.py
 import json
-import requests
 import time
+import requests
+
+URL = "http://localhost:8000/api/ingest"
 
 with open(
     "data/email-data-advanced.json",
-    "r"
-) as file:
+    "r",
+    encoding="utf-8"
+) as f:
 
-    emails = json.load(file)
+    emails = json.load(f)
 
 for email in emails:
 
-    requests.post(
-        "http://localhost:8000/api/ingest",
-        json=email
-    )
+    try:
 
-    print(email["message_id"])
+        response = requests.post(
+            URL,
+            json=email
+        )
+
+        print(
+            response.json()
+        )
+
+    except Exception as e:
+
+        print(e)
 
     time.sleep(1)

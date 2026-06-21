@@ -5,7 +5,44 @@ from app.services.deduplication import is_duplicate
 from app.services.thread_service import create_thread_if_not_exists
 from app.services.intelligence_engine import process_email
 
+from app.services.validation_service import (
+    validate_email_payload,
+    truncate_body
+)
+
+from app.services.priority_service import (
+    calculate_priority
+)
+
+from app.services.internal_detector import (
+    is_internal_email
+)
+
+from app.services.internal_detector import (
+is_internal_email
+)
+
+from app.services.spam_detector import (
+detect_spam
+)
+
+from app.services.security_detector import (
+detect_security
+)
+
+from app.services.urgency_detector import (
+detect_urgency
+)
+
+
 def ingest_email(db, payload):
+
+    validate_email_payload(
+        payload.subject,
+        payload.body
+    )
+
+    body = truncate_body(payload.body)
 
     if is_duplicate(db, payload.message_id):
 
@@ -20,6 +57,14 @@ def ingest_email(db, payload):
         payload.subject,
         payload.sender
     )
+
+    text = payload.subject + " " + body
+
+    is_spam = detect_spam( payload.subject, body )
+    is_security = detect_security( text )
+    urgency = detect_urgency( text )
+    internal = is_internal_email( payload.sender )
+    priority_score = calculate_priority( urgency, is_security, is_spam )
 
     analysis = process_email(
              db,
@@ -36,7 +81,7 @@ def ingest_email(db, payload):
 
     subject=payload.subject,
 
-    body=payload.body,
+    body=body,
 
     timestamp=payload.timestamp,
 
@@ -44,7 +89,9 @@ def ingest_email(db, payload):
 
     category=analysis["category"],
 
-    urgency=analysis["urgency"],
+    urgency=urgency,
+
+    priority_score=priority_score,
 
     sentiment=analysis["sentiment"],
 
@@ -52,9 +99,11 @@ def ingest_email(db, payload):
 
     confidence=analysis["confidence"],
 
-    is_spam=analysis["is_spam"],
+    is_spam=is_spam,
 
-    is_security=analysis["is_security"],
+    is_security=is_security,
+
+    is_internal=internal,
 
     customer_stage=analysis["customer_stage"],
 
