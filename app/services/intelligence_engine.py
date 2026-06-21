@@ -108,7 +108,7 @@ def process_email(
 
         agent_logs = execute_plan(
             subject,
-            body,
+            sender,
             plan
         )
 

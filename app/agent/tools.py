@@ -1,6 +1,9 @@
 # app/agent/tools.py
 from app.rag.retriever import search_policies
 
+from app.services.reputation_service import (
+    scrape_public_sentiment
+)
 
 def search_knowledge_base(query):
 
@@ -29,6 +32,46 @@ def check_account_status(email):
 
         "billing_status": "Active"
     }
+
+def get_thread_history(thread_id):
+
+    return {
+
+        "thread_id": thread_id,
+
+        "history_found": True
+    }
+
+
+def draft_reply(subject):
+
+    return {
+
+        "draft_created": True,
+
+        "subject": subject
+    }
+
+
+def flag_for_legal(reason):
+
+    return {
+
+        "status": "Legal Review",
+
+        "reason": reason
+    }
+
+
+def send_auto_reply(email):
+
+    return {
+
+        "status": "Sent",
+
+        "recipient": email
+    }
+
 
 
 def escalate_to_human(reason):
