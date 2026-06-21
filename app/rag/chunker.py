@@ -1,22 +1,28 @@
 # app/rag/chunker.py
 def chunk_text(
         text,
-        chunk_size=300
+        chunk_size=400,
+        overlap=100
 ):
 
     words = text.split()
 
     chunks = []
 
-    for i in range(
-        0,
-        len(words),
-        chunk_size
-    ):
+    start = 0
+
+    while start < len(words):
+
+        end = start + chunk_size
+
         chunk = " ".join(
-            words[i:i+chunk_size]
+            words[start:end]
         )
 
         chunks.append(chunk)
+
+        start += (
+            chunk_size - overlap
+        )
 
     return chunks

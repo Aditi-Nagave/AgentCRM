@@ -1,4 +1,4 @@
-# app/rag/index_builder.py
+# app/rag/seed_kb.py
 from pathlib import Path
 
 from app.rag.chunker import (

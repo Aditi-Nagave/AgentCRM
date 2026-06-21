@@ -53,4 +53,12 @@ is_security
 is_spam
 customer_stage
 recommended_action
+policy_references
+
+Example:
+
+"policy_references":[
+   "refund_policy",
+   "escalation_matrix"
+]
 """

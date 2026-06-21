@@ -9,7 +9,12 @@ router = APIRouter()
 
 
 @router.get("/rag/search")
-
 def rag_search(q: str):
 
-    return search_policies(q)
+    return {
+
+        "query": q,
+
+        "results":
+        search_policies(q)
+    }

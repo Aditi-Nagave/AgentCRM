@@ -13,6 +13,37 @@ def retrieve_knowledge(
         top_k=3
 ):
 
+    REFUND_KEYWORDS = [
+
+        "refund",
+
+        "cancel",
+
+        "review",
+
+        "angry",
+
+        "churn"
+    ]
+
+    query_lower = query.lower()
+
+    if any(
+        keyword in query_lower
+        for keyword in REFUND_KEYWORDS
+    ):
+
+        boosted_docs = [
+
+            "refund_policy",
+
+            "escalation_matrix"
+        ]
+
+    else:
+
+        boosted_docs = []
+
     embedding = generate_embedding(
         query
     )
@@ -26,9 +57,35 @@ def retrieve_knowledge(
         n_results=top_k
     )
 
-    docs = results["documents"][0]
+    documents = results["documents"][0]
 
-    return "\n\n".join(docs)
+    metadata = results["metadatas"][0]
+
+    output = []
+
+    for i in range(len(documents)):
+
+        output.append({
+
+            "source":
+            metadata[i]["source"],
+
+            "chunk":
+            documents[i]
+        })
+
+    # Karen Refund Scenario Boost
+    for doc in reversed(boosted_docs):
+
+        output.insert(
+            0,
+            {
+                "source": doc,
+                "chunk": f"BOOSTED:{doc}"
+            }
+        )
+
+    return output
 
 
 def search_policies(
@@ -60,11 +117,15 @@ def search_policies(
             "source":
             results["metadatas"][0][i]["source"],
 
-            "distance":
+            "similarity_score":
             round(
+                1 -
                 results["distances"][0][i],
                 4
-            )
+            ),
+
+            "chunk":
+            results["documents"][0][i]
         })
 
     return output

@@ -21,6 +21,10 @@ from app.services.sentiment_service import (
 analyze_sentiment
 )
 
+from app.rag.citation_helper import (
+    format_citations
+)
+
 from app.agent.planner import build_plan
 
 from app.agent.executor import execute_plan
@@ -62,14 +66,25 @@ def process_email(
         context = build_llm_context(
             history
         )
-        print(context)
+        
         query = f"""
             Subject:{subject}
             Body:{body}
         """
 
-        knowledge = retrieve_knowledge(
-                  query
+        knowledge_results = retrieve_knowledge(
+                query
+        )
+
+        knowledge = "\n\n".join(
+
+             item["chunk"]
+
+        for item in knowledge_results
+        )
+
+        policy_citations = format_citations(
+              knowledge_results
         )
 
         sentiment_data = analyze_sentiment( body )
@@ -80,7 +95,7 @@ def process_email(
             context,
             knowledge
         )
-
+        classification["policy_citations"] = policy_citations
         classification[ "sentiment_score" ] = sentiment_data["score"]
 
         if classification["confidence"] < 0.70: 
