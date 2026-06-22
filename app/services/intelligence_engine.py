@@ -99,13 +99,6 @@ def process_email(
 
         market_context = ""
 
-        classification = classify_email(
-              subject,
-               body,
-              context,
-               knowledge
-        )
-
         if should_fetch_intelligence(
                     "",
                     "",
@@ -127,7 +120,12 @@ def process_email(
            {market_context}
                  """
 
-
+        classification = classify_email(
+              subject,
+               body,
+              context,
+               knowledge
+        )
         classification["policy_citations"] = policy_citations
         classification[ "sentiment_score" ] = sentiment_data["score"]
 
