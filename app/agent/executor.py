@@ -7,6 +7,9 @@ from app.agent.tool_registry import (
     MAX_TOOL_CALLS
 )
 
+from app.services.audit_logger import (
+    create_audit_log
+)
 
 def execute_plan(
     db,
@@ -67,6 +70,17 @@ def execute_plan(
 
             result = escalate_to_human(subject)
 
+            create_audit_log(
+
+                  db,
+
+                 "email",
+
+                  subject,
+
+                 "ESCALATED_TO_HUMAN"
+            )
+
             logs.append(
                 create_log(
                     "Human intervention required",
@@ -79,6 +93,17 @@ def execute_plan(
         elif step == "create_internal_ticket":
 
             result = create_internal_ticket(subject)
+
+            create_audit_log(
+
+                 db,
+
+                 "email",
+
+                 subject,
+ 
+                 "INTERNAL_TICKET_CREATED"
+            )
 
             logs.append(
                 create_log(
@@ -125,6 +150,17 @@ def execute_plan(
                 subject
             )
 
+            create_audit_log(
+
+                 db,
+
+                 "email",
+
+                 subject,
+
+                 "LEGAL_FLAGGED"
+            )
+
             logs.append(
                 create_log(
                     "Legal review required",
@@ -139,7 +175,18 @@ def execute_plan(
             result = send_auto_reply(
                 sender
             )
+            
+            create_audit_log(
 
+                    db,
+
+                    "email",
+
+                    sender,
+
+                    "AUTO_REPLY_SENT"
+            )
+            
             logs.append(
                 create_log(
                     "Send automated reply",

@@ -1,5 +1,8 @@
 # app/services/draft_service.py
 from app.models.email import Email
+from app.services.audit_logger import (
+    create_audit_log
+)
 
 
 def update_draft(
@@ -37,5 +40,23 @@ def approve_draft(
     email.recommended_action = "Reply Sent"
 
     db.commit()
+
+    create_audit_log(
+
+    db,
+
+    "email",
+
+    email.id,
+
+    "DRAFT_APPROVED",
+
+    diff={
+
+        "recommended_action":
+
+        email.recommended_action
+    }
+    )
 
     return email

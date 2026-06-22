@@ -41,7 +41,9 @@ from app.services.job_service import (
     create_job,
     update_job
 )
-
+from app.services.action_log_service import (
+    save_agent_reasoning
+)
 def ingest_email(db, payload):
 
     job_id = create_job()
@@ -144,6 +146,13 @@ def ingest_email(db, payload):
 
     db.add(email)
     db.commit()
+
+    save_agent_reasoning(
+    db,
+    email.id,
+    analysis["recommended_action"],
+    analysis["agent_logs"]
+    )
 
     return {
         "status": "success",

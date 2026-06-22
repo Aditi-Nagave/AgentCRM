@@ -25,8 +25,20 @@ from app.models.email import Email
 from app.models.action import Action
 
 
-from app.core.exceptions import (value_error_handler)
+from app.core.exceptions import (
+    value_error_handler,
+    validation_error_handler,
+    database_error_handler,
+    generic_error_handler
+)
 
+from fastapi.exceptions import (
+    RequestValidationError
+)
+
+from sqlalchemy.exc import (
+    SQLAlchemyError
+)
 
 from app.core.database import Base
 from app.core.database import engine
@@ -49,6 +61,9 @@ app.include_router(audit_router)
 app.include_router(intelligence_router)
 app.include_router(category_router)
 app.add_exception_handler(ValueError, value_error_handler)
+app.add_exception_handler(RequestValidationError, validation_error_handler)
+app.add_exception_handler(SQLAlchemyError,database_error_handler)
+app.add_exception_handler(Exception,generic_error_handler)
 
 @app.get("/")
 def home():
