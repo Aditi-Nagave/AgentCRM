@@ -33,7 +33,9 @@ detect_security
 from app.services.urgency_detector import (
 detect_urgency
 )
-
+from app.services.entity_extractor import (
+    extract_entities
+)
 
 def ingest_email(db, payload):
 
@@ -74,6 +76,9 @@ def ingest_email(db, payload):
              payload.body
     )
 
+
+    entities = extract_entities(body)
+
     email = Email(
 
     message_id=payload.message_id,
@@ -87,6 +92,10 @@ def ingest_email(db, payload):
     timestamp=payload.timestamp,
 
     thread_id=payload.thread_id,
+
+    raw_entities=entities,
+
+    status="Received",
 
     category=analysis["category"],
 

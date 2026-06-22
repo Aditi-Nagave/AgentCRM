@@ -1,5 +1,9 @@
 # app/services/thread_service.py
+# app/services/thread_service.py
+
 from app.models.thread import Thread
+from datetime import datetime
+
 
 def create_thread_if_not_exists(
     db,
@@ -17,10 +21,17 @@ def create_thread_if_not_exists(
         thread = Thread(
             thread_id=thread_id,
             subject=subject,
-            sender_email=sender
+            sender_email=sender,
+            first_seen_at=datetime.utcnow(),
+            last_updated_at=datetime.utcnow()
         )
 
         db.add(thread)
+        db.commit()
+
+    else:
+        # Update thread activity timestamp
+        thread.last_updated_at = datetime.utcnow()
         db.commit()
 
     return thread

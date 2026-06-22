@@ -14,6 +14,17 @@ from app.api.contacts import router as contacts_router
 from app.api.audit import router as audit_router
 from app.api.intelligence import router as intelligence_router
 from app.api.category_analytics import router as category_router
+
+
+from app.models.audit_log import AuditLog
+from app.models.knowledge_chunk import KnowledgeChunk
+from app.models.web_intelligence_cache import WebIntelligenceCache
+from app.models.contact import Contact
+from app.models.thread import Thread
+from app.models.email import Email
+from app.models.action import Action
+
+
 from app.core.exceptions import (value_error_handler)
 
 
