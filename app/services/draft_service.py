@@ -22,6 +22,17 @@ def update_draft(
 
     db.commit()
 
+    create_audit_log(
+
+    db,
+
+    "draft",
+
+    email_id,
+
+    "DRAFT_UPDATED"
+)
+
     return email
 
 

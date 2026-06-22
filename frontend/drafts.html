@@ -1,0 +1,44 @@
+<!-- frontend/drafts.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Draft Approval</title>
+    <link rel="stylesheet"
+          href="css/style.css">
+</head>
+
+<body>
+
+<h1>Draft Editor</h1>
+
+<input
+id="emailId"
+placeholder="Email ID"
+/>
+
+<br><br>
+
+<textarea
+id="draftText"
+rows="10"
+cols="80"
+></textarea>
+
+<br><br>
+
+<button onclick="saveDraft()">
+Save Draft
+</button>
+
+<button onclick="approveDraft()">
+Approve Draft
+</button>
+
+<div id="result"></div>
+
+<script src="js/api.js"></script>
+<script src="js/drafts.js"></script>
+
+</body>
+</html>

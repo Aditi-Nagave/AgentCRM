@@ -43,14 +43,18 @@ def update_contact_status(
 
 ):
 
+    status = payload.get("status")
+
+    if not status:
+        return {
+            "error": "status field required"
+        }
+
     update_status(
-
-        db,
-
-        email,
-
-        payload["status"]
-    )
+         db,
+         email,
+         status
+       )
 
     return {
         "status": "updated"

@@ -1,0 +1,28 @@
+<!-- frontend/analytics.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Sentiment Analytics</h1>
+
+<input
+type="email"
+id="senderEmail"
+placeholder="Customer Email"
+/>
+
+<button onclick="loadAnalytics()">
+Analyze
+</button>
+
+<div id="analyticsResult"></div>
+
+<script src="js/api.js"></script>
+<script src="js/analytics.js"></script>
+
+</body>
+</html>

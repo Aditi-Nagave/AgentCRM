@@ -33,6 +33,10 @@ from app.services.reputation_service import (
     scrape_public_sentiment
 )
 
+from app.services.sentiment_trend_service import (
+    has_unanswered_complaints
+)
+
 from app.agent.planner import build_plan
 
 from app.agent.executor import execute_plan
@@ -128,6 +132,11 @@ def process_email(
         )
         classification["policy_citations"] = policy_citations
         classification[ "sentiment_score" ] = sentiment_data["score"]
+
+        if has_unanswered_complaints(db,sender):
+            classification["category"] = (
+            "Customer Churn Risk"
+    )
 
         if classification["confidence"] < 0.70: 
             classification[ "requires_human" ] = True 

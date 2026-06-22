@@ -6,6 +6,11 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.email import Email
 
+from app.services.audit_logger import (
+    create_audit_log
+)
+
+
 router = APIRouter()
 
 @router.post("/respond/{email_id}")
@@ -25,6 +30,17 @@ def respond(
             "message": "Email not found",
             "details": None
         }
+    
+    create_audit_log(
+
+        db,
+
+        "email",
+
+        email_id,
+
+        "EMAIL_SENT"
+    )
 
     return {
         "email_id": email.id,

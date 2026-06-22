@@ -24,11 +24,19 @@ def edit_draft(
 
 ):
 
+    draft_text = payload.get("draft")
+
+    if not draft_text:
+
+        return {
+           "error": "draft field required"
+        }
+
     email = update_draft(
-        db,
-        id,
-        payload["draft"]
-    )
+         db,
+         id,
+         draft_text
+        )
 
     return {
         "status": "updated",

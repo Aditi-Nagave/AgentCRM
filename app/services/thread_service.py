@@ -1,5 +1,4 @@
 # app/services/thread_service.py
-# app/services/thread_service.py
 
 from app.models.thread import Thread
 from datetime import datetime

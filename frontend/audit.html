@@ -1,0 +1,32 @@
+<!-- frontend/audit.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audit Logs</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Audit Logs</h1>
+
+<input
+id="entityType"
+value="email"
+/>
+
+<input
+id="entityId"
+placeholder="Email ID"
+/>
+
+<button onclick="loadAudit()">
+Load
+</button>
+
+<div id="auditResults"></div>
+
+<script src="js/api.js"></script>
+<script src="js/audit.js"></script>
+
+</body>
+</html>

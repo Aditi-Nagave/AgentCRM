@@ -69,3 +69,28 @@ def has_negative_trend(
 
         for e in emails
     )
+
+def has_unanswered_complaints(
+    db,
+    sender
+):
+
+    emails = (
+        db.query(Email)
+        .filter(
+            Email.sender == sender
+        )
+        .order_by(
+            Email.timestamp.desc()
+        )
+        .limit(3)
+        .all()
+    )
+
+    if len(emails) < 3:
+        return False
+
+    return all(
+        e.sentiment_score < 0
+        for e in emails
+    )
