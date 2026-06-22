@@ -9,6 +9,7 @@ from app.agent.tool_registry import (
 
 
 def execute_plan(
+    db,
     subject,
     sender,
     plan
@@ -149,9 +150,11 @@ def execute_plan(
             )
 
         elif step == "scrape_public_sentiment":
+            company = "SenAI"
 
             result = scrape_public_sentiment(
-                "Company"
+                db,
+                company
             )
 
             logs.append(

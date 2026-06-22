@@ -37,7 +37,14 @@ from app.services.entity_extractor import (
     extract_entities
 )
 
+from app.services.job_service import (
+    create_job,
+    update_job
+)
+
 def ingest_email(db, payload):
+
+    job_id = create_job()
 
     validate_email_payload(
         payload.subject,
@@ -48,11 +55,18 @@ def ingest_email(db, payload):
 
     if is_duplicate(db, payload.message_id):
 
+        update_job(
+            job_id,
+            "duplicate"
+        )
+
         return {
-            "status": "error",
+             "job_id": job_id,
+            "status": "duplicate",
             "message": "Duplicate Email"
         }
 
+        
     create_thread_if_not_exists(
         db,
         payload.thread_id,

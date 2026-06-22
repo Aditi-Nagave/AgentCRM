@@ -25,6 +25,14 @@ from app.rag.citation_helper import (
     format_citations
 )
 
+from app.intelligence.trigger_detector import (
+    should_fetch_intelligence
+)
+
+from app.services.reputation_service import (
+    scrape_public_sentiment
+)
+
 from app.agent.planner import build_plan
 
 from app.agent.executor import execute_plan
@@ -87,14 +95,39 @@ def process_email(
               knowledge_results
         )
 
-        sentiment_data = analyze_sentiment( body )
+        sentiment_data = analyze_sentiment(body)
+
+        market_context = ""
 
         classification = classify_email(
-            subject,
-            body,
-            context,
-            knowledge
+              subject,
+               body,
+              context,
+               knowledge
         )
+
+        if should_fetch_intelligence(
+                    "",
+                    "",
+                    sentiment_data["score"],
+                    subject,
+                    body
+            ):
+            intel = scrape_public_sentiment(
+                      db,
+                     "SenAI"
+                )
+
+            market_context = str(intel)
+
+        knowledge += f"""
+
+        MARKET INTELLIGENCE
+
+           {market_context}
+                 """
+
+
         classification["policy_citations"] = policy_citations
         classification[ "sentiment_score" ] = sentiment_data["score"]
 
@@ -107,6 +140,7 @@ def process_email(
         )
 
         agent_logs = execute_plan(
+            db,
             subject,
             sender,
             plan

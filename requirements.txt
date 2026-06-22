@@ -11,3 +11,4 @@ groq
 sentence-transformers
 chromadb
 pytest
+bs4

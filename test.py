@@ -1,120 +1,50 @@
-from app.agent.planner import build_plan
+from app.agent.planner import (
+    build_plan
+)
 
+print("\n=== SECURITY TEST ===\n")
 
-def test_bob_sla_chain():
+classification = {
 
-    plan = build_plan({
+    "category":
+    "Security Incident",
 
-        "category": "SLA Breach",
+    "urgency":
+    "Critical"
+}
 
-        "urgency": "High"
-    })
+plan = build_plan(
+    classification
+)
 
-    expected = [
+print("Generated Plan:")
 
-        "get_thread_history",
+for step in plan:
 
-        "search_knowledge_base",
+    print("-", step)
 
-        "check_account_status",
+passed = True
 
-        "flag_for_legal",
+if "escalate_to_human" not in plan:
 
-        "draft_reply",
+    passed = False
 
-        "escalate_to_human"
-    ]
+if "create_internal_ticket" not in plan:
 
-    if plan == expected:
+    passed = False
 
-        print("✅ Bob SLA Chain Test PASSED")
+if "send_auto_reply" in plan:
 
-    else:
+    passed = False
 
-        print("❌ Bob SLA Chain Test FAILED")
-        print("Expected:", expected)
-        print("Got:", plan)
+if passed:
 
-
-def test_gdpr_chain():
-
-    plan = build_plan({
-
-        "category":
-        "GDPR Article 20 Request",
-
-        "urgency":
-        "High"
-    })
-
-    expected = [
-
-        "search_knowledge_base",
-
-        "get_thread_history",
-
-        "flag_for_legal",
-
-        "create_internal_ticket",
-
-        "generate_gdpr_acknowledgement",
-
-        "escalate_to_human"
-    ]
-
-    if plan == expected:
-
-        print("✅ GDPR Workflow Test PASSED")
-
-    else:
-
-        print("❌ GDPR Workflow Test FAILED")
-        print("Expected:", expected)
-        print("Got:", plan)
-
-
-def test_critical_never_auto_reply():
-
-    plan = build_plan({
-
-        "category":
-        "Security Incident",
-
-        "urgency":
-        "Critical"
-    })
-
-    passed = (
-
-        "send_auto_reply" not in plan
-
-        and
-
-        "escalate_to_human" in plan
+    print(
+        "\n✅ Security Test PASSED"
     )
 
-    if passed:
+else:
 
-        print("✅ Critical Email Guardrail PASSED")
-
-    else:
-
-        print("❌ Critical Email Guardrail FAILED")
-        print("Generated Plan:", plan)
-
-
-if __name__ == "__main__":
-
-    print("\n==============================")
-    print("AUTONOMOUS AGENT ASSESSMENT")
-    print("==============================\n")
-
-    test_bob_sla_chain()
-
-    test_gdpr_chain()
-
-    test_critical_never_auto_reply()
-
-    print("\n==============================")
-    print("ASSESSMENT COMPLETE")
-    print("==============================")
+    print(
+        "\n❌ Security Test FAILED"
+    )

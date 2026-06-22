@@ -1,20 +1,41 @@
 # app/services/reputation_service.py
-def scrape_public_sentiment(company):
 
-    return {
+from app.intelligence.market_intelligence import (
+    build_market_intelligence
+)
 
-        "company": company,
+from app.intelligence.cache_service import (
+    get_cached_result,
+    save_cache
+)
 
-        "rating": 2.4,
 
-        "trend": "Negative",
+def scrape_public_sentiment(
+    db,
+    company
+):
 
-        "mentions": [
+    cached = get_cached_result(
+        db,
+        company
+    )
 
-            "Slow support",
+    if cached:
+        return cached
 
-            "Refund complaints",
+    result = build_market_intelligence(
+        company
+    )
 
-            "Billing issues"
-        ]
-    }
+    save_cache(
+
+        db,
+
+        company,
+
+        "trustpilot",
+
+        result
+    )
+
+    return result
