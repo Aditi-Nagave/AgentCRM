@@ -1,53 +1,64 @@
 // frontend/js/thread.js
 
+const API =
+    "http://127.0.0.1:8000";
+
 const params =
-new URLSearchParams(
-    window.location.search
-)
+    new URLSearchParams(
+        window.location.search
+    );
 
-const sender =
-params.get("email")
+const email =
+    params.get("email");
 
-let currentEmailId = 1
+let currentEmailId = null;
 
-async function loadWorkspace(){
+async function loadWorkspace() {
 
-    const thread =
-    await apiGet(
-        `/threads/${sender}`
-    )
+    await loadThread();
 
-    renderTimeline(
-        thread
-    )
+    await loadContact();
 
-    const contact =
-    await apiGet(
-        `/contacts/${sender}`
-    )
+}
 
-    renderContact(
-        contact
-    )
+async function loadThread() {
 
-    loadAgentLogs()
+    const res =
+        await fetch(
+            `${API}/threads/${email}`
+        );
 
+    const data =
+        await res.json();
+
+    if(!data.length)
+        return;
+
+    currentEmailId =
+        data[0].id;
+
+    renderTimeline(data);
+
+    renderDraft(
+        data[0]
+    );
+
+    await loadAgentLogs(
+        currentEmailId
+    );
 }
 
 function renderTimeline(
     emails
 ){
 
-    let html = ""
+    let html = "";
 
-    emails.forEach(email=>{
-
-        currentEmailId =
-        email.id
+    emails.forEach(email => {
 
         html += `
 
-        <div class="timeline-email">
+        <div class="email-card">
 
             <h3>
                 ${email.subject}
@@ -57,157 +68,197 @@ function renderTimeline(
                 ${email.body}
             </p>
 
-            <span class="
-                badge
-                badge-${(
-                    email.sentiment ||
-                    "neutral"
-                ).toLowerCase()}
-            ">
-
+            <span class="badge badge-negative">
                 ${email.sentiment}
-
             </span>
 
-            <span class="
-                badge
-                badge-${(
-                    email.urgency ||
-                    "low"
-                ).toLowerCase()}
-            ">
-
+            <span class="badge badge-low">
                 ${email.urgency}
-
             </span>
 
         </div>
 
-        `
-    })
+        `;
+    });
 
-    document
-    .getElementById(
+    document.getElementById(
         "timelinePane"
-    )
-    .innerHTML = html
+    ).innerHTML = html;
 }
 
-function renderContact(
-    contact
+function renderDraft(
+    email
 ){
 
-    document
-    .getElementById(
-        "contactPane"
-    )
-    .innerHTML = `
-
-        <div class="contact-card">
-
-            <p>
-                <b>Name:</b>
-                ${contact.name || ""}
-            </p>
-
-            <p>
-                <b>Company:</b>
-                ${contact.company || ""}
-            </p>
-
-            <p>
-                <b>Status:</b>
-                ${contact.status || ""}
-            </p>
-
-            <p>
-                <b>Account Value:</b>
-                ${contact.account_value || 0}
-            </p>
-
-            <p>
-                <b>Churn Risk:</b>
-                ${contact.churn_risk_score || 0}
-            </p>
-
-        </div>
-
-    `
+    document.getElementById(
+        "draftText"
+    ).value =
+        email.draft_reply || "";
 }
 
-async function loadAgentLogs(){
+async function loadContact() {
+
+    const res =
+        await fetch(
+            `${API}/contacts/${email}`
+        );
+
+    const data =
+        await res.json();
+
+    document.getElementById(
+        "contactPane"
+    ).innerHTML = `
+
+        <p>
+            <b>Email:</b>
+            ${data.email}
+        </p>
+
+        <p>
+            <b>Name:</b>
+            ${data.name || "N/A"}
+        </p>
+
+        <p>
+            <b>Company:</b>
+            ${data.company || "N/A"}
+        </p>
+
+        <p>
+            <b>Status:</b>
+            ${data.status}
+        </p>
+
+        <p>
+            <b>Account Value:</b>
+            ${data.account_value}
+        </p>
+
+        <p>
+            <b>Churn Risk:</b>
+            ${data.churn_risk_score}
+        </p>
+
+    `;
+}
+
+async function loadAgentLogs(
+    emailId
+){
+
+    const res =
+        await fetch(
+            `${API}/agent/logs/${emailId}`
+        );
 
     const logs =
-    await apiGet(
-        `/agent/logs/${currentEmailId}`
-    )
+        await res.json();
 
-    let html = ""
+    let html = "";
 
-    logs.forEach(log=>{
+    logs.forEach(log => {
 
-        html += `
+        log.reasoning_trace.forEach(step => {
 
-        <div class="agent-step">
+            html += `
 
-            <p>
+            <div>
+
+                <b>Thought:</b>
+
+                ${step.thought}
+
+                <br>
 
                 <b>Action:</b>
 
-                ${log.action_type}
+                ${step.action}
 
-            </p>
+                <br>
 
-        </div>
+                <b>Observation:</b>
 
-        `
-    })
+                ${step.observation}
 
-    document
-    .getElementById(
+                <br>
+
+                <b>Next:</b>
+
+                ${step.next_step}
+
+                <hr>
+
+            </div>
+
+            `;
+        });
+    });
+
+    document.getElementById(
         "agentPane"
-    )
-    .innerHTML = html
+    ).innerHTML = html;
+
+    loadDemoRAG();
+
+    loadDemoMarket();
 }
 
-async function saveDraft(){
+function loadDemoRAG(){
 
-    const draft =
-    document
-    .getElementById(
-        "draftText"
-    )
-    .value
+    document.getElementById(
+        "ragPane"
+    ).innerHTML = `
 
-    const result =
-    await apiPatch(
+        <b>Complaint Handling Policy</b>
 
-        `/drafts/${currentEmailId}`,
+        <p>
+        Customers threatening
+        public reviews should
+        be escalated immediately.
+        </p>
 
-        {
-            draft:draft
-        }
-    )
+        <p>
+        Source:
+        retention_playbook.md
+        </p>
 
-    alert(
-        JSON.stringify(
-            result
-        )
-    )
+    `;
+}
+
+function loadDemoMarket(){
+
+    document.getElementById(
+        "intelPane"
+    ).innerHTML = `
+
+        <p>
+        Trustpilot Risk:
+        High
+        </p>
+
+        <p>
+        Recent complaints:
+        Slow support,
+        refund delays
+        </p>
+
+    `;
 }
 
 async function approveDraft(){
 
-    const result =
-    await apiPost(
-        `/drafts/${currentEmailId}/approve`
-    )
+    await fetch(
+        `${API}/drafts/${currentEmailId}/approve`,
+        {
+            method:"POST"
+        }
+    );
 
     alert(
-        JSON.stringify(
-            result
-        )
-    )
+        "Draft Approved"
+    );
 }
 
-loadWorkspace()
+
+loadWorkspace();
