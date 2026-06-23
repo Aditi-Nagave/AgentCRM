@@ -1,48 +1,169 @@
 // frontend/js/contacts.js
-async function getContact() {
+async function loadContact(){
 
     const email =
-        document.getElementById(
-            "contactEmail"
-        ).value;
+    document
+    .getElementById(
+        "contactEmail"
+    )
+    .value
 
-    const data =
-        await getData(
-            `/contacts/${email}`
-        );
+    if(!email){
 
-    if (!data) {
+        alert(
+            "Enter Email"
+        )
 
-        document.getElementById(
-            "contactResult"
-        ).innerHTML =
-        "Contact not found";
-
-        return;
+        return
     }
 
-    document.getElementById(
+    const contact =
+    await apiGet(
+        `/contacts/${email}`
+    )
+
+    if(
+        contact.error
+    ){
+
+        alert(
+            contact.error
+        )
+
+        return
+    }
+
+    renderContact(
+        contact
+    )
+}
+
+function renderContact(
+    contact
+){
+
+    document
+    .getElementById(
         "contactResult"
-    ).innerHTML = `
-        <div class="result-card">
+    )
+    .innerHTML = `
 
-            <h3>
-                ${data.name || ""}
-            </h3>
+    <div class="card">
 
-            <p>
-                ${data.company || ""}
-            </p>
+        <h2>
+            Contact Profile
+        </h2>
 
-            <p>
-                ${data.status || ""}
-            </p>
+        <p>
 
-            <p>
-                Account Value:
-                ${data.account_value || 0}
-            </p>
+            <b>Name:</b>
 
-        </div>
-    `;
+            ${contact.name || ""}
+
+        </p>
+
+        <p>
+
+            <b>Email:</b>
+
+            ${contact.email || ""}
+
+        </p>
+
+        <p>
+
+            <b>Company:</b>
+
+            ${contact.company || ""}
+
+        </p>
+
+        <p>
+
+            <b>Status:</b>
+
+            ${contact.status || ""}
+
+        </p>
+
+        <p>
+
+            <b>Account Value:</b>
+
+            ${contact.account_value || 0}
+
+        </p>
+
+        <p>
+
+            <b>Churn Risk:</b>
+
+            ${contact.churn_risk_score || 0}
+
+        </p>
+
+        <br>
+
+        <select
+            id="newStatus">
+
+            <option>
+                Active
+            </option>
+
+            <option>
+                VIP
+            </option>
+
+            <option>
+                Blocked
+            </option>
+
+            <option>
+                Churned
+            </option>
+
+        </select>
+
+        <button
+            class="btn btn-primary"
+            onclick="updateStatus(
+                '${contact.email}'
+            )">
+
+            Update Status
+
+        </button>
+
+    </div>
+
+    `
+}
+
+async function updateStatus(
+    email
+){
+
+    const status =
+    document
+    .getElementById(
+        "newStatus"
+    )
+    .value
+
+    const result =
+    await apiPatch(
+
+        `/contacts/${email}/status`,
+
+        {
+            status:status
+        }
+    )
+
+    alert(
+        JSON.stringify(
+            result
+        )
+    )
 }

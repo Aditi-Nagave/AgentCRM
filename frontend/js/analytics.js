@@ -1,25 +1,172 @@
 // frontend/js/analytics.js
-async function loadAnalytics() {
+async function loadSentimentTrend(){
 
-    const email =
-    document.getElementById(
-        "senderEmail"
-    ).value;
-
-    const response =
-    await fetch(
-       `${API_BASE}/analytics/sentiment-trend?sender=${email}`
-    );
+    const sender =
+    "angry@test.com"
 
     const data =
-    await response.json();
+    await apiGet(
+        `/analytics/sentiment-trend?sender=${sender}`
+    )
 
-    document.getElementById(
-       "analyticsResult"
-    ).innerHTML =
-    JSON.stringify(
-        data,
-        null,
-        2
-    );
+    if(
+        data.error
+    ){
+        return
+    }
+
+    const labels = []
+
+    const values = []
+
+    data.forEach(item=>{
+
+        labels.push(
+            item.date ||
+            item.timestamp
+        )
+
+        values.push(
+            item.score ||
+            item.sentiment_score
+        )
+
+    })
+
+    createSentimentChart(
+        labels,
+        values
+    )
 }
+
+async function loadCategoryBreakdown(){
+
+    const data =
+    await apiGet(
+        "/analytics/category-breakdown"
+    )
+
+    if(
+        data.error
+    ){
+        return
+    }
+
+    const labels = []
+    const values = []
+
+    data.forEach(item=>{
+
+        labels.push(
+            item.category
+        )
+
+        values.push(
+            item.count
+        )
+
+    })
+
+    createCategoryChart(
+        labels,
+        values
+    )
+}
+
+async function loadRiskAccounts(){
+
+    const emails =
+    await apiGet(
+        "/emails"
+    )
+
+    let html = ""
+
+    emails.forEach(email=>{
+
+        if(
+            email.sentiment ===
+            "Negative"
+        ){
+
+            html += `
+
+            <div class="risk-card">
+
+                <b>
+                    ${email.sender}
+                </b>
+
+                <p>
+                    ${email.subject}
+                </p>
+
+            </div>
+
+            `
+        }
+
+    })
+
+    document
+    .getElementById(
+        "riskAccounts"
+    )
+    .innerHTML = html
+}
+
+async function loadAgentMetrics(){
+
+    const stats =
+    await apiGet(
+        "/dashboard/stats"
+    )
+
+    document
+    .getElementById(
+        "agentMetrics"
+    )
+    .innerHTML = `
+
+        <div class="metric">
+
+            Total Emails:
+
+            ${stats.total_emails}
+
+        </div>
+
+        <div class="metric">
+
+            Critical:
+
+            ${stats.critical}
+
+        </div>
+
+        <div class="metric">
+
+            Spam:
+
+            ${stats.spam}
+
+        </div>
+
+        <div class="metric">
+
+            Security:
+
+            ${stats.security}
+
+        </div>
+
+    `
+}
+
+loadSentimentTrend()
+
+loadCategoryBreakdown()
+
+loadRiskAccounts()
+
+loadAgentMetrics()

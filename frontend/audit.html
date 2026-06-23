@@ -1,31 +1,85 @@
 <!-- frontend/audit.html -->
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Audit Logs</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <title>Audit Viewer</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
 </head>
+
 <body>
 
-<h1>Audit Logs</h1>
+<div class="header">
 
-<input
-id="entityType"
-value="email"
-/>
+    <h1>Audit History</h1>
 
-<input
-id="entityId"
-placeholder="Email ID"
-/>
+</div>
 
-<button onclick="loadAudit()">
-Load
-</button>
+<div class="navbar">
 
-<div id="auditResults"></div>
+    <a href="index.html">Dashboard</a>
+
+    <a href="inbox.html">Inbox</a>
+
+    <a href="thread.html">Thread Workspace</a>
+
+    <a href="analytics.html">Analytics</a>
+
+    <a href="contacts.html">Contacts</a>
+
+    <a href="audit.html">Audit</a>
+
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>
+            Search Audit Logs
+        </h2>
+
+        <select
+            id="entityType">
+
+            <option value="email">
+                Email
+            </option>
+
+            <option value="contact">
+                Contact
+            </option>
+
+        </select>
+
+        <input
+            id="entityId"
+            placeholder="Entity ID"
+        >
+
+        <button
+            class="btn btn-primary"
+            onclick="loadAudit()">
+
+            Search
+
+        </button>
+
+    </div>
+
+    <div
+        id="auditResults">
+
+    </div>
+
+</div>
 
 <script src="js/api.js"></script>
+
 <script src="js/audit.js"></script>
 
 </body>

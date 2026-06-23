@@ -3,16 +3,129 @@
 <html>
 
 <head>
-    <title>Thread</title>
+
+    <title>Thread Workspace</title>
+
     <link rel="stylesheet"
           href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/thread.css">
+
 </head>
 
 <body>
 
-<h1>Thread Workspace</h1>
+<div class="header">
 
-<div id="threadData"></div>
+    <h1>Thread Workspace</h1>
+
+</div>
+
+<div id="navbar-container"></div>
+
+<div class="workspace">
+
+    <!-- LEFT -->
+
+    <div class="left-pane">
+
+        <h2>Email Timeline</h2>
+
+        <div id="timelinePane">
+
+        </div>
+
+    </div>
+
+    <!-- CENTER -->
+
+    <div class="center-pane">
+
+        <div class="panel">
+
+            <h2>Contact Profile</h2>
+
+            <div id="contactPane">
+
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>RAG Context</h2>
+
+            <div id="ragPane">
+
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>Market Intelligence</h2>
+
+            <div id="intelPane">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="right-pane">
+
+        <div class="panel">
+
+            <h2>Agent Reasoning</h2>
+
+            <div id="agentPane">
+
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>Actions</h2>
+
+            <textarea
+                id="draftText"
+                rows="10">
+
+            </textarea>
+
+            <button
+                class="btn btn-primary"
+                onclick="approveDraft()">
+
+                Approve & Send
+
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="saveDraft()">
+
+                Edit Draft
+
+            </button>
+
+            <button
+                class="btn btn-danger">
+
+                Escalate
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script src="js/api.js"></script>
 <script src="js/thread.js"></script>

@@ -1,0 +1,118 @@
+<!-- frontend/inbox.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Mission Control Inbox</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/inbox.css">
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>Mission Control Inbox</h1>
+
+</div>
+
+<div class="navbar">
+
+    <a href="index.html">Dashboard</a>
+
+    <a href="inbox.html">Inbox</a>
+
+    <a href="thread.html">Thread</a>
+
+    <a href="analytics.html">Analytics</a>
+
+    <a href="contacts.html">Contacts</a>
+
+    <a href="audit.html">Audit</a>
+
+</div>
+
+<div class="container">
+
+    <div class="tabs">
+
+        <div
+            class="tab active">
+            All
+        </div>
+
+        <div class="tab">
+            Needs Human
+        </div>
+
+        <div class="tab">
+            Auto-Replied
+        </div>
+
+        <div class="tab">
+            Escalated
+        </div>
+
+        <div class="tab">
+            Spam
+        </div>
+
+    </div>
+
+    <div class="filter-bar">
+
+        <input
+            id="searchInput"
+            placeholder="Search emails"
+        >
+
+        <select id="sortBy">
+
+            <option value="date">
+                Date
+            </option>
+
+            <option value="urgency">
+                Urgency
+            </option>
+
+            <option value="sentiment">
+                Sentiment
+            </option>
+
+        </select>
+
+        <button
+            class="btn btn-primary"
+            onclick="loadEmails()">
+
+            Refresh
+
+        </button>
+
+    </div>
+
+    <div
+        id="emailList"
+        class="email-list">
+
+    </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/inbox.js"></script>
+<script src="js/search.js"></script>
+
+<script src="js/filters.js"></script>
+
+<script src="js/polling.js"></script>
+
+</body>
+</html>

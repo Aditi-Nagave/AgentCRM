@@ -1,45 +1,149 @@
 // frontend/js/audit.js
-async function loadAudit() {
+async function loadAudit(){
 
-    const type =
-        document.getElementById(
-            "entityType"
-        ).value;
+    const entityType =
+    document
+    .getElementById(
+        "entityType"
+    )
+    .value
 
-    const id =
-        document.getElementById(
-            "entityId"
-        ).value;
+    const entityId =
+    document
+    .getElementById(
+        "entityId"
+    )
+    .value
 
-    const data =
-        await getData(
-            `/audit/${type}/${id}`
-        );
+    if(!entityId){
 
-    let html = "";
+        alert(
+            "Enter Entity ID"
+        )
 
-    if (data.error) {
-
-        html =
-        `<div class="result-card">
-            ${data.error}
-        </div>`;
-
-    } else {
-
-        data.forEach(log => {
-
-            html += `
-            <div class="result-card">
-                <h4>${log.action}</h4>
-                <p>${log.entity_type}</p>
-                <p>${log.timestamp}</p>
-            </div>
-            `;
-        });
+        return
     }
 
-    document.getElementById(
+    const logs =
+    await apiGet(
+
+        `/audit/${entityType}/${entityId}`
+
+    )
+
+    if(
+        logs.error
+    ){
+
+        alert(
+            logs.error
+        )
+
+        return
+    }
+
+    renderAuditLogs(
+        logs
+    )
+}
+
+function renderAuditLogs(
+    logs
+){
+
+    let html = ""
+
+    if(
+        logs.length === 0
+    ){
+
+        html = `
+
+        <div class="card">
+
+            No Audit Logs Found
+
+        </div>
+
+        `
+
+        document
+        .getElementById(
+            "auditResults"
+        )
+        .innerHTML = html
+
+        return
+    }
+
+    logs.forEach(log=>{
+
+        html += `
+
+        <div class="card">
+
+            <h3>
+
+                ${log.action}
+
+            </h3>
+
+            <p>
+
+                <b>Entity Type:</b>
+
+                ${log.entity_type}
+
+            </p>
+
+            <p>
+
+                <b>Entity ID:</b>
+
+                ${log.entity_id}
+
+            </p>
+
+            <p>
+
+                <b>Performed By:</b>
+
+                ${log.performed_by}
+
+            </p>
+
+            <p>
+
+                <b>Timestamp:</b>
+
+                ${log.timestamp}
+
+            </p>
+
+            <p>
+
+                <b>Diff:</b>
+
+            </p>
+
+            <pre>
+
+${JSON.stringify(
+    log.diff,
+    null,
+    2
+)}
+
+            </pre>
+
+        </div>
+
+        `
+    })
+
+    document
+    .getElementById(
         "auditResults"
-    ).innerHTML = html;
+    )
+    .innerHTML = html
 }

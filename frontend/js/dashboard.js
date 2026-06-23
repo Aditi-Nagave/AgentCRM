@@ -1,33 +1,37 @@
 // frontend/js/dashboard.js
 async function loadDashboard() {
 
-    const response =
-    await fetch(
-      `${API_BASE}/dashboard/stats`
-    );
+    const stats =
+        await apiGet(
+            "/dashboard/stats"
+        );
 
-    const data =
-    await response.json();
+    if(stats.error){
+
+        alert(stats.error);
+
+        return;
+    }
 
     document.getElementById(
         "totalEmails"
     ).innerText =
-    data.total_emails;
-
-    document.getElementById(
-        "spamEmails"
-    ).innerText =
-    data.spam;
+    stats.total_emails || 0;
 
     document.getElementById(
         "criticalEmails"
     ).innerText =
-    data.critical;
+    stats.critical || 0;
+
+    document.getElementById(
+        "spamEmails"
+    ).innerText =
+    stats.spam || 0;
 
     document.getElementById(
         "securityEmails"
     ).innerText =
-    data.security;
+    stats.security || 0;
 }
 
 loadDashboard();

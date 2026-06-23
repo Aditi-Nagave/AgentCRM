@@ -1,51 +1,213 @@
 // frontend/js/thread.js
+
 const params =
-    new URLSearchParams(
-        window.location.search
-    );
+new URLSearchParams(
+    window.location.search
+)
 
-const email =
-    params.get("email");
+const sender =
+params.get("email")
 
-async function loadThread() {
+let currentEmailId = 1
 
-    const data =
-        await getData(
-            `/threads/${email}`
-        );
+async function loadWorkspace(){
 
-    let html = "";
+    const thread =
+    await apiGet(
+        `/threads/${sender}`
+    )
 
-    data.forEach(item => {
+    renderTimeline(
+        thread
+    )
+
+    const contact =
+    await apiGet(
+        `/contacts/${sender}`
+    )
+
+    renderContact(
+        contact
+    )
+
+    loadAgentLogs()
+
+}
+
+function renderTimeline(
+    emails
+){
+
+    let html = ""
+
+    emails.forEach(email=>{
+
+        currentEmailId =
+        email.id
 
         html += `
-        <div class="result-card">
+
+        <div class="timeline-email">
 
             <h3>
-                ${item.subject}
+                ${email.subject}
             </h3>
 
             <p>
-                ${item.body}
+                ${email.body}
+            </p>
+
+            <span class="
+                badge
+                badge-${(
+                    email.sentiment ||
+                    "neutral"
+                ).toLowerCase()}
+            ">
+
+                ${email.sentiment}
+
+            </span>
+
+            <span class="
+                badge
+                badge-${(
+                    email.urgency ||
+                    "low"
+                ).toLowerCase()}
+            ">
+
+                ${email.urgency}
+
+            </span>
+
+        </div>
+
+        `
+    })
+
+    document
+    .getElementById(
+        "timelinePane"
+    )
+    .innerHTML = html
+}
+
+function renderContact(
+    contact
+){
+
+    document
+    .getElementById(
+        "contactPane"
+    )
+    .innerHTML = `
+
+        <div class="contact-card">
+
+            <p>
+                <b>Name:</b>
+                ${contact.name || ""}
             </p>
 
             <p>
-                Sentiment:
-                ${item.sentiment}
+                <b>Company:</b>
+                ${contact.company || ""}
             </p>
 
             <p>
-                Urgency:
-                ${item.urgency}
+                <b>Status:</b>
+                ${contact.status || ""}
+            </p>
+
+            <p>
+                <b>Account Value:</b>
+                ${contact.account_value || 0}
+            </p>
+
+            <p>
+                <b>Churn Risk:</b>
+                ${contact.churn_risk_score || 0}
             </p>
 
         </div>
-        `;
-    });
 
-    document.getElementById(
-        "threadData"
-    ).innerHTML = html;
+    `
 }
 
-loadThread();
+async function loadAgentLogs(){
+
+    const logs =
+    await apiGet(
+        `/agent/logs/${currentEmailId}`
+    )
+
+    let html = ""
+
+    logs.forEach(log=>{
+
+        html += `
+
+        <div class="agent-step">
+
+            <p>
+
+                <b>Action:</b>
+
+                ${log.action_type}
+
+            </p>
+
+        </div>
+
+        `
+    })
+
+    document
+    .getElementById(
+        "agentPane"
+    )
+    .innerHTML = html
+}
+
+async function saveDraft(){
+
+    const draft =
+    document
+    .getElementById(
+        "draftText"
+    )
+    .value
+
+    const result =
+    await apiPatch(
+
+        `/drafts/${currentEmailId}`,
+
+        {
+            draft:draft
+        }
+    )
+
+    alert(
+        JSON.stringify(
+            result
+        )
+    )
+}
+
+async function approveDraft(){
+
+    const result =
+    await apiPost(
+        `/drafts/${currentEmailId}/approve`
+    )
+
+    alert(
+        JSON.stringify(
+            result
+        )
+    )
+}
+
+loadWorkspace()

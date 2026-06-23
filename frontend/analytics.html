@@ -1,27 +1,123 @@
 <!-- frontend/analytics.html -->
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Analytics</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <title>Analytics Dashboard</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/analytics.css">
+
 </head>
+
 <body>
 
-<h1>Sentiment Analytics</h1>
+<div class="header">
 
-<input
-type="email"
-id="senderEmail"
-placeholder="Customer Email"
-/>
+    <h1>Analytics Dashboard</h1>
 
-<button onclick="loadAnalytics()">
-Analyze
-</button>
+</div>
 
-<div id="analyticsResult"></div>
+<div class="navbar">
+
+    <a href="index.html">
+        Dashboard
+    </a>
+
+    <a href="inbox.html">
+        Inbox
+    </a>
+
+    <a href="thread.html">
+        Thread Workspace
+    </a>
+
+    <a href="analytics.html">
+        Analytics
+    </a>
+
+    <a href="contacts.html">
+        Contacts
+    </a>
+
+    <a href="audit.html">
+        Audit
+    </a>
+
+</div>
+
+<div class="container">
+
+    <div class="analytics-grid">
+
+        <div class="chart-card">
+
+            <h2>
+                Sentiment Trend
+            </h2>
+
+            <canvas
+                id="sentimentChart">
+            </canvas>
+
+        </div>
+
+        <div class="chart-card">
+
+            <h2>
+                Category Breakdown
+            </h2>
+
+            <canvas
+                id="categoryChart">
+            </canvas>
+
+        </div>
+
+    </div>
+
+    <div class="analytics-grid">
+
+        <div class="panel">
+
+            <h2>
+                At Risk Accounts
+            </h2>
+
+            <div
+                id="riskAccounts">
+
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>
+                Agent Performance
+            </h2>
+
+            <div
+                id="agentMetrics">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="js/api.js"></script>
+
+<script src="js/charts.js"></script>
+
 <script src="js/analytics.js"></script>
 
 </body>

@@ -1,62 +1,111 @@
 <!-- frontend/index.html -->
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>AI CRM Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <title>SenAI CRM Dashboard</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
 </head>
+
 <body>
 
-<header>
-    <h1>AI CRM Dashboard</h1>
-</header>
+<div class="header">
 
-<div class="stats-container">
+    <h1>SenAI CRM Intelligence Platform</h1>
 
-    <div class="card">
-        <h3>Total Emails</h3>
-        <p id="totalEmails">0</p>
-    </div>
+</div>
 
-    <div class="card">
-        <h3>Spam Emails</h3>
-        <p id="spamEmails">0</p>
-    </div>
+<div class="navbar">
 
-    <div class="card">
-        <h3>Critical</h3>
-        <p id="criticalEmails">0</p>
-    </div>
+    <a href="index.html">
+        Dashboard
+    </a>
 
-    <div class="card">
-        <h3>Security</h3>
-        <p id="securityEmails">0</p>
-    </div>
+    <a href="inbox.html">
+        Inbox
+    </a>
 
-    <div>
-    <nav>
+    <a href="thread.html">
+        Thread Workspace
+    </a>
 
-<a href="emails.html">
-Inbox
-</a>
+    <a href="analytics.html">
+        Analytics
+    </a>
 
-<a href="thread.html">
-Thread Workspace
-</a>
+    <a href="contacts.html">
+        Contacts
+    </a>
 
-<a href="contacts.html">
-Contacts
-</a>
+    <a href="audit.html">
+        Audit
+    </a>
 
-<a href="analytics.html">
-Analytics
-</a>
+</div>
 
-<a href="audit.html">
-Audit
-</a>
+<div class="container">
 
-</nav>
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <h3>Total Emails</h3>
+
+            <div
+                class="stat-number"
+                id="totalEmails">
+
+                0
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Critical</h3>
+
+            <div
+                class="stat-number"
+                id="criticalEmails">
+
+                0
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Spam</h3>
+
+            <div
+                class="stat-number"
+                id="spamEmails">
+
+                0
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Security</h3>
+
+            <div
+                class="stat-number"
+                id="securityEmails">
+
+                0
+
+            </div>
+
+        </div>
 
     </div>
 
