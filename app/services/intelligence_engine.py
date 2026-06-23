@@ -67,7 +67,26 @@ def process_email(
                 "is_spam": False, 
                 "customer_stage": "Internal", 
                 "recommended_action": "Route Internal Inbox", 
-                "draft_reply": "", "agent_logs": []
+                "draft_reply": "Internal email received.", 
+                "agent_logs": [
+
+            {
+
+                "thought":
+                "Internal email detected",
+
+                "action":
+                "Route Internal Inbox",
+
+                "observation":
+                "Sender belongs to internal domain",
+
+                "next_step":
+                "No AI workflow required"
+
+            }
+
+        ]
                   }
 
         history = get_thread_context(

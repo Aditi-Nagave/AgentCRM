@@ -93,10 +93,15 @@ function renderDraft(
     document.getElementById(
         "draftText"
     ).value =
-        email.draft_reply || "";
+
+        email.draft_reply ||
+
+        email.draft ||
+
+        "Thank you for contacting us. We are reviewing your request.";
 }
 
-async function loadContact() {
+async function loadContact(){
 
     const res =
         await fetch(
@@ -106,42 +111,27 @@ async function loadContact() {
     const data =
         await res.json();
 
+    if(!data){
+
+        document.getElementById(
+            "contactPane"
+        ).innerHTML = `
+            <p>No Contact Found</p>
+        `;
+
+        return;
+    }
+
     document.getElementById(
         "contactPane"
     ).innerHTML = `
-
-        <p>
-            <b>Email:</b>
-            ${data.email}
-        </p>
-
-        <p>
-            <b>Name:</b>
-            ${data.name || "N/A"}
-        </p>
-
-        <p>
-            <b>Company:</b>
-            ${data.company || "N/A"}
-        </p>
-
-        <p>
-            <b>Status:</b>
-            ${data.status}
-        </p>
-
-        <p>
-            <b>Account Value:</b>
-            ${data.account_value}
-        </p>
-
-        <p>
-            <b>Churn Risk:</b>
-            ${data.churn_risk_score}
-        </p>
-
+        <p><b>Email:</b> ${data.email || email}</p>
+        <p><b>Name:</b> ${data.name || "N/A"}</p>
+        <p><b>Company:</b> ${data.company || "N/A"}</p>
+        <p><b>Status:</b> ${data.status || "Unknown"}</p>
     `;
 }
+
 
 async function loadAgentLogs(
     emailId
@@ -157,9 +147,15 @@ async function loadAgentLogs(
 
     let html = "";
 
+    if(!logs.length){
+
+    html =
+    "<p>No Agent Activity Found</p>";
+}
+
     logs.forEach(log => {
 
-        log.reasoning_trace.forEach(step => {
+        (log.reasoning_trace || []).forEach(step => {
 
             html += `
 
@@ -246,6 +242,41 @@ function loadDemoMarket(){
     `;
 }
 
+
+async function saveDraft(){
+
+    const draft =
+        document.getElementById(
+            "draftText"
+        ).value;
+
+    const res =
+        await fetch(
+            `${API}/drafts/${currentEmailId}`,
+            {
+                method:"PATCH",
+
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:JSON.stringify({
+                    draft:draft
+                })
+            }
+        );
+
+    const data =
+        await res.json();
+
+    alert(
+        data.status ||
+        "Draft Saved"
+    );
+}
+
+
 async function approveDraft(){
 
     await fetch(
@@ -259,6 +290,30 @@ async function approveDraft(){
         "Draft Approved"
     );
 }
-
-
 loadWorkspace();
+
+
+function renderWorkspaceAudit(
+    audit
+){
+
+    let html = "";
+
+    audit.forEach(item => {
+
+        html += `
+
+        <div>
+
+            ${item.action}
+
+        </div>
+
+        `;
+    });
+
+    console.log(
+        "Audit Logs:",
+        audit
+    );
+}
