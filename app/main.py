@@ -17,6 +17,9 @@ from app.api.category_analytics import router as category_router
 from app.api.emails import (router as emails_router)
 from app.api.agent_logs import (router as agent_logs_router)
 from app.api.thread_workspace import router as workspace_router
+from app.api.rag_context import (router as rag_context_router)
+from app.api.advanced_analytics import (router as advanced_analytics_router)
+
 
 from app.models.audit_log import AuditLog
 from app.models.knowledge_chunk import KnowledgeChunk
@@ -73,6 +76,8 @@ app.include_router(category_router)
 app.include_router(emails_router)
 app.include_router(agent_logs_router)
 app.include_router(workspace_router)
+app.include_router(rag_context_router)
+app.include_router(advanced_analytics_router)
 app.add_exception_handler(ValueError, value_error_handler)
 app.add_exception_handler(RequestValidationError, validation_error_handler)
 app.add_exception_handler(SQLAlchemyError,database_error_handler)

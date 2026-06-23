@@ -170,3 +170,21 @@ loadCategoryBreakdown()
 loadRiskAccounts()
 
 loadAgentMetrics()
+
+
+async function loadHeatmap(){
+
+    const data =
+    await apiGet(
+        "/analytics/response-heatmap"
+    )
+
+    createHeatmapChart(
+
+        Object.keys(data),
+
+        Object.values(data)
+    )
+}
+
+loadHeatmap()

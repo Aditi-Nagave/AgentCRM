@@ -44,6 +44,12 @@ from app.services.job_service import (
 from app.services.action_log_service import (
     save_agent_reasoning
 )
+
+from app.services.contact_service import (
+    create_contact_if_not_exists
+)
+
+
 def ingest_email(db, payload):
 
     job_id = create_job()
@@ -75,6 +81,11 @@ def ingest_email(db, payload):
         payload.subject,
         payload.sender
     )
+
+    create_contact_if_not_exists(
+    db,
+    payload.sender
+)
 
     text = payload.subject + " " + body
 
@@ -154,7 +165,16 @@ def ingest_email(db, payload):
     analysis["agent_logs"]
     )
 
+    update_job(
+    job_id,
+    "completed"
+    )
+
     return {
-        "status": "success",
-        "message": "Email Stored"
+
+        "job_id":job_id,
+
+        "status":"completed",
+
+        "message":"Email Stored"
     }

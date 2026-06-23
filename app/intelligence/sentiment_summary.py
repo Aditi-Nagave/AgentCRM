@@ -3,13 +3,23 @@ def summarize_reviews(data):
 
     themes = []
 
-    for source in data:
+    for item in data:
 
-        if not source:
-            continue
+        if isinstance(item, list):
 
-        themes.extend(
-            source.get(
+            for source in item:
+
+                themes.extend(
+                source.get(
+                    "themes",
+                    []
+                )
+            )
+
+        elif item:
+
+            themes.extend(
+            item.get(
                 "themes",
                 []
             )

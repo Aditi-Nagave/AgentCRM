@@ -112,20 +112,14 @@ def search_policies(
         len(results["ids"][0])
     ):
 
+        distance = results["distances"][0][i]
+
+        similarity = max(0,round(1 / (1 + distance),4))
+
         output.append({
-
-            "source":
-            results["metadatas"][0][i]["source"],
-
-            "similarity_score":
-            round(
-                1 -
-                results["distances"][0][i],
-                4
-            ),
-
-            "chunk":
-            results["documents"][0][i]
+             "source": results["metadatas"][0][i]["source"],
+             "similarity_score": similarity,
+            "chunk": results["documents"][0][i]
         })
 
     return output

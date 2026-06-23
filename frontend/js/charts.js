@@ -74,3 +74,35 @@ function createCategoryChart(
         }
     )
 }
+
+
+function createHeatmapChart(
+    labels,
+    values
+){
+
+    new Chart(
+
+        document.getElementById(
+            "heatmapChart"
+        ),
+
+        {
+
+            type:"bar",
+
+            data:{
+
+                labels:labels,
+
+                datasets:[{
+
+                    label:"Emails",
+
+                    data:values
+
+                }]
+            }
+        }
+    )
+}

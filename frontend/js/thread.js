@@ -19,6 +19,14 @@ async function loadWorkspace() {
 
     await loadContact();
 
+    if(currentEmailId){
+
+        await loadRAG(
+            currentEmailId
+        );
+
+        await loadMarket();
+    }
 }
 
 async function loadThread() {
@@ -65,7 +73,7 @@ function renderTimeline(
             </h3>
 
             <p>
-                ${email.body}
+                ${highlightEntities(email.body)}
             </p>
 
             <span class="badge badge-negative">
@@ -159,35 +167,14 @@ async function loadAgentLogs(
 
             html += `
 
-            <div>
+             <details class="agent-step">
 
-                <b>Thought:</b>
-
-                ${step.thought}
-
-                <br>
-
-                <b>Action:</b>
-
-                ${step.action}
-
-                <br>
-
-                <b>Observation:</b>
-
-                ${step.observation}
-
-                <br>
-
-                <b>Next:</b>
-
-                ${step.next_step}
-
-                <hr>
-
-            </div>
-
-            `;
+              <summary>${step.action}</summary>
+              <p>Thought:${step.thought}</p>
+              <p>Observation:${step.observation}</p>
+              <p>Next:${step.next_step}</p>
+            </details>
+        `;
         });
     });
 
@@ -195,53 +182,96 @@ async function loadAgentLogs(
         "agentPane"
     ).innerHTML = html;
 
-    loadDemoRAG();
-
-    loadDemoMarket();
 }
 
-function loadDemoRAG(){
+async function loadRAG(
+    emailId
+){
 
-    document.getElementById(
+    const results =
+    await apiGet(
+        `/workspace/rag/${emailId}`
+    )
+
+    if(results.error_code){
+
+        document.getElementById(
+            "ragPane"
+        ).innerHTML =
+        `<p>No RAG Context Found</p>`;
+
+        return;
+    }
+
+    let html = ""
+
+    results.forEach(item=>{
+
+        html += `
+
+        <div class="rag-card">
+
+            <b>
+                ${item.source}
+            </b>
+
+            <p>
+                Score:
+                ${item.similarity_score}
+            </p>
+
+            <p>
+                ${item.chunk}
+            </p>
+
+        </div>
+
+        `
+    })
+
+    document
+    .getElementById(
         "ragPane"
-    ).innerHTML = `
-
-        <b>Complaint Handling Policy</b>
-
-        <p>
-        Customers threatening
-        public reviews should
-        be escalated immediately.
-        </p>
-
-        <p>
-        Source:
-        retention_playbook.md
-        </p>
-
-    `;
+    )
+    .innerHTML = html
 }
 
-function loadDemoMarket(){
+async function loadMarket(){
 
-    document.getElementById(
+    const result =
+    await apiGet(
+        "/intelligence/reputation?company=SenAI"
+    )
+
+    const intel =
+    result.market_intelligence
+
+    document
+    .getElementById(
         "intelPane"
-    ).innerHTML = `
+    )
+    .innerHTML = `
 
-        <p>
-        Trustpilot Risk:
-        High
-        </p>
+        <div class="intel-card">
 
-        <p>
-        Recent complaints:
-        Slow support,
-        refund delays
-        </p>
+            <h4>
+                Market Summary
+            </h4>
 
-    `;
+            <pre>
+
+${JSON.stringify(
+    intel.summary,
+    null,
+    2
+)}
+
+            </pre>
+
+        </div>
+
+    `
 }
-
 
 async function saveDraft(){
 
@@ -316,4 +346,39 @@ function renderWorkspaceAudit(
         "Audit Logs:",
         audit
     );
+}
+
+
+function highlightEntities(
+    text
+){
+
+    text = text.replace(
+
+        /(ORD-\d+)/g,
+
+        `<span class="entity order">
+            $1
+        </span>`
+    )
+
+    text = text.replace(
+
+        /(\$[\d,]+)/g,
+
+        `<span class="entity money">
+            $1
+        </span>`
+    )
+
+    text = text.replace(
+
+        /(\d{1,2}\/\d{1,2}\/\d{4})/g,
+
+        `<span class="entity deadline">
+            $1
+        </span>`
+    )
+
+    return text
 }
