@@ -19,6 +19,7 @@ from app.api.agent_logs import (router as agent_logs_router)
 from app.api.thread_workspace import router as workspace_router
 from app.api.rag_context import (router as rag_context_router)
 from app.api.advanced_analytics import (router as advanced_analytics_router)
+from app.api.escalation import (router as escalation_router)
 
 
 from app.models.audit_log import AuditLog
@@ -28,6 +29,7 @@ from app.models.contact import Contact
 from app.models.thread import Thread
 from app.models.email import Email
 from app.models.action import Action
+
 
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.exceptions import (
@@ -78,6 +80,8 @@ app.include_router(agent_logs_router)
 app.include_router(workspace_router)
 app.include_router(rag_context_router)
 app.include_router(advanced_analytics_router)
+app.include_router(escalation_router)
+
 app.add_exception_handler(ValueError, value_error_handler)
 app.add_exception_handler(RequestValidationError, validation_error_handler)
 app.add_exception_handler(SQLAlchemyError,database_error_handler)

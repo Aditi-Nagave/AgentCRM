@@ -67,6 +67,12 @@ def parse_llm_response(response_text):
 
         cleaned = cleaned.strip()
 
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+
+        if start != -1 and end != -1:
+            cleaned = cleaned[start:end+1]
+
         data = json.loads(cleaned)
 
         data["requires_human"] = convert_bool(

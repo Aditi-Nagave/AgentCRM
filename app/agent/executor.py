@@ -11,6 +11,10 @@ from app.services.audit_logger import (
     create_audit_log
 )
 
+from app.services.agent_log_service import (
+    save_agent_log
+)
+
 def execute_plan(
     db,
     subject,
@@ -225,6 +229,8 @@ def execute_plan(
                     "Continue"
                 )
             )
+
+
 
 
     return logs

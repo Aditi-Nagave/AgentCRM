@@ -2,6 +2,10 @@
 from fastapi import APIRouter
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from datetime import datetime
+
+from app.models.action import Action
+from app.models.thread import Thread
 
 from app.core.database import get_db
 from app.models.email import Email
@@ -31,19 +35,39 @@ def respond(
             "details": None
         }
     
+    email.status = "Replied"
+
+    action = Action(
+        email_id=email.id,
+        action_type="Auto-Reply",
+        proposed_content=email.draft_reply,
+        is_approved=True,
+        approved_by="system",
+        executed_at=datetime.utcnow()
+    )
+
+    db.add(action)
+
+    thread = db.query(Thread)\
+       .filter(
+           Thread.thread_id ==
+           email.thread_id
+       )\
+       .first()
+
+    if thread:
+        thread.status = "Resolved"
+
+    db.commit()
+
     create_audit_log(
-
         db,
-
         "email",
-
-        email_id,
-
-        "EMAIL_SENT"
+        str(email.id),
+        "EMAIL_REPLIED"
     )
 
     return {
-        "email_id": email.id,
-        "draft_reply": email.draft_reply,
-        "status": "ready_to_send"
-    }
+    "status": "sent",
+    "email_id": email.id
+}

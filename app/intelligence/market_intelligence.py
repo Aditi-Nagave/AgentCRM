@@ -9,25 +9,26 @@ from app.intelligence.sentiment_summary import (
     summarize_reviews
 )
 
-
 def build_market_intelligence(
     company
 ):
 
     results = asyncio.run(
-        fetch_market_data(company)
-    )
 
-    summary = summarize_reviews(
-        results
+        fetch_market_data(
+            company
+        )
+
     )
 
     return {
 
-        "market_intelligence": {
+        "company":company,
 
-            "sources": results,
+        "sources":results,
 
-            "summary": summary
-        }
+        "summary":
+        summarize_reviews(
+            results
+        )
     }

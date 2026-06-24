@@ -2,7 +2,7 @@
 async function loadEmails() {
 
     const data =
-        await getData(
+        await apiGet(
             "/emails"
         );
 

@@ -2,25 +2,31 @@
 import asyncio
 
 from app.intelligence.scraper import (
-    scrape_trustpilot
+    scrape_website
 )
 
+async def fetch_market_data(company):
 
-async def fetch_market_data(
-    company
-):
+    urls = [
+
+        f"https://www.google.com/search?q={company}",
+
+        f"https://news.google.com/search?q={company}"
+    ]
 
     loop = asyncio.get_event_loop()
 
-    trustpilot = loop.run_in_executor(
-        None,
-        scrape_trustpilot,
-        company
-    )
+    tasks = [
 
-    results = await asyncio.gather(
-        trustpilot,
-        return_exceptions=True
-    )
+        loop.run_in_executor(
+            None,
+            scrape_website,
+            url
+        )
 
-    return results
+        for url in urls
+    ]
+
+    return await asyncio.gather(
+        *tasks
+    )

@@ -1,7 +1,34 @@
-# app/services/agent_log_service.py
 import json
 
 from app.models.action import Action
+
+
+def save_agent_log(
+    db,
+    email_id,
+    logs
+):
+
+    action = Action(
+
+        email_id=email_id,
+
+        action_type="Agent Run",
+
+        agent_reasoning_log=json.dumps(
+            logs
+        ),
+
+        is_approved=False
+    )
+
+    db.add(action)
+
+    db.commit()
+
+    db.refresh(action)
+
+    return action
 
 
 def get_agent_logs(

@@ -1,28 +1,64 @@
 # app/services/thread_workspace_service.py
 from app.models.email import Email
+from app.models.contact import Contact
 from app.models.action import Action
-from app.models.audit_log import AuditLog
+
+from app.services.agent_log_service import (
+    get_agent_logs
+)
 
 def get_workspace(
     db,
-    sender
+    email
 ):
 
-    emails = db.query(Email)\
-        .filter(
-            Email.sender==sender
-        )\
-        .all()
+    emails = db.query(
+        Email
+    ).filter(
+        Email.sender == email
+    ).order_by(
+        Email.timestamp
+    ).all()
 
-    actions = db.query(Action).all()
+    contact = db.query(
+        Contact
+    ).filter(
+        Contact.email == email
+    ).first()
 
-    audit = db.query(AuditLog).all()
+    actions = []
+
+    if emails:
+
+        email_ids = [
+            e.id
+            for e in emails
+        ]
+
+        actions = db.query(
+            Action
+        ).filter(
+            Action.email_id.in_(
+                email_ids
+            )
+        ).all()
+
+    agent_logs = []
+
+    for e in emails:
+
+        logs = get_agent_logs(
+            db,
+            e.id
+        )
+
+        agent_logs.extend(
+            logs
+        )
 
     return {
-
-        "emails":emails,
-
-        "actions":actions,
-
-        "audit":audit
+        "contact": contact,
+        "emails": emails,
+        "actions": actions,
+        "agent_logs": agent_logs
     }

@@ -55,17 +55,14 @@ async function loadCategoryBreakdown(){
     const labels = []
     const values = []
 
-    data.forEach(item=>{
+    Object.entries(data)
+.forEach(([category,count])=>{
 
-        labels.push(
-            item.category
-        )
+    labels.push(category)
 
-        values.push(
-            item.count
-        )
+    values.push(count)
 
-    })
+})
 
     createCategoryChart(
         labels,

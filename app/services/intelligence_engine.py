@@ -5,6 +5,7 @@ from app.services.context_builder import (
     get_thread_context,
     build_llm_context
 )
+import traceback
 
 from app.rag.retriever import (
     retrieve_knowledge
@@ -193,6 +194,9 @@ def process_email(
         print("CLASSIFIER FAILED")
         print(type(e))
         print(e)
+
+        traceback.print_exc()
+
         print("===================\n")
 
         text = subject + " " + body

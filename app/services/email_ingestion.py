@@ -5,9 +5,15 @@ from app.services.deduplication import is_duplicate
 from app.services.thread_service import create_thread_if_not_exists
 from app.services.intelligence_engine import process_email
 
+
+
 from app.services.validation_service import (
     validate_email_payload,
     truncate_body
+)
+
+from app.services.agent_log_service import (
+    save_agent_log
 )
 
 from app.services.priority_service import (
@@ -47,6 +53,10 @@ from app.services.action_log_service import (
 
 from app.services.contact_service import (
     create_contact_if_not_exists
+)
+
+from app.ai.reply_generator import (
+    generate_reply
 )
 
 
@@ -126,7 +136,7 @@ def ingest_email(db, payload):
 
     category=analysis["category"],
 
-    urgency=urgency,
+    urgency=analysis["urgency"],
 
     priority_score=priority_score,
 
@@ -154,10 +164,18 @@ def ingest_email(db, payload):
 
     knowledge_used=True
 )
+    
 
     db.add(email)
     db.commit()
 
+    save_agent_log(
+    db,
+    email.id,
+    analysis["agent_logs"]
+)
+
+    
     save_agent_reasoning(
     db,
     email.id,

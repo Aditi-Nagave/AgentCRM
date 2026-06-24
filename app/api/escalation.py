@@ -1,16 +1,21 @@
-# app/api/rag_context.py
+# app/api/escalation.py
+
 from fastapi import APIRouter
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.email import Email
-from app.rag.retriever import search_policies
+
+from app.services.audit_logger import (
+    create_audit_log
+)
 
 router = APIRouter()
 
-@router.get("/workspace/rag/{email_id}")
-def get_rag_context(
+
+@router.post("/escalate/{email_id}")
+def escalate(
     email_id:int,
     db:Session=Depends(get_db)
 ):
@@ -20,12 +25,32 @@ def get_rag_context(
         .first()
 
     if not email:
+
         return {
+
             "error_code":"EMAIL_NOT_FOUND",
+
             "message":"Email not found",
+
             "details":{}
         }
 
-    query = f"{email.subject} {email.body}"
+    email.status = "Escalated"
 
-    return search_policies(query)
+    db.commit()
+
+    create_audit_log(
+
+        db,
+
+        "email",
+
+        email.id,
+
+        "MANUAL_ESCALATION"
+    )
+
+    return {
+
+        "status":"Escalated"
+    }

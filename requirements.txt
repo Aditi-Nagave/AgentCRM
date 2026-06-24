@@ -12,3 +12,11 @@ sentence-transformers
 chromadb
 pytest
 bs4
+requests
+lxml
+
+python-jose
+passlib[bcrypt]
+bcrypt
+celery
+redis

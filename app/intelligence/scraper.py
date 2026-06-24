@@ -1,22 +1,36 @@
 # app/intelligence/scraper.py
+
 import requests
+
 from bs4 import BeautifulSoup
 
 from app.intelligence.robots_checker import (
     robots_allowed
 )
 
-def scrape_trustpilot(company):
-
-    url = f"https://www.trustpilot.com"
-
-    if not robots_allowed(url):
-        return None
+def scrape_website(url):
 
     try:
 
+        if not robots_allowed(url):
+
+            return {
+
+                "status":"blocked",
+
+                "reason":"robots.txt"
+            }
+
         response = requests.get(
+
             url,
+
+            headers={
+
+                "User-Agent":
+                "Mozilla/5.0"
+            },
+
             timeout=10
         )
 
@@ -25,22 +39,39 @@ def scrape_trustpilot(company):
             "html.parser"
         )
 
+        title = soup.title.text \
+            if soup.title \
+            else "No Title"
+
+        paragraphs = []
+
+        for p in soup.find_all("p")[:20]:
+
+            text = p.get_text(
+                strip=True
+            )
+
+            if text:
+
+                paragraphs.append(
+                    text
+                )
+
         return {
 
-            "source": "Trustpilot",
+            "status":"success",
 
-            "rating": 4.2,
+            "title":title,
 
-            "review_count": 1200,
-
-            "themes": [
-
-                "billing issues",
-                "slow support",
-                "refund complaints"
-            ]
+            "content":
+            paragraphs
         }
 
-    except:
+    except Exception as e:
 
-        return None
+        return {
+
+            "status":"failed",
+
+            "error":str(e)
+        }

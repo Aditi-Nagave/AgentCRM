@@ -39,16 +39,21 @@ async function loadThread() {
     const data =
         await res.json();
 
-    if(!data.length)
+    const emails =
+        data.emails || [];
+
+    if(!emails.length)
         return;
 
     currentEmailId =
-        data[0].id;
+        emails[emails.length - 1].id;
 
-    renderTimeline(data);
+    renderTimeline(
+        emails
+    );
 
     renderDraft(
-        data[0]
+        emails[emails.length - 1]
     );
 
     await loadAgentLogs(
@@ -94,9 +99,17 @@ function renderTimeline(
     ).innerHTML = html;
 }
 
-function renderDraft(
-    email
-){
+function renderDraft(email){
+
+    console.log(
+        "EMAIL OBJECT:",
+        email
+    );
+
+    console.log(
+        "DRAFT REPLY:",
+        email.draft_reply
+    );
 
     document.getElementById(
         "draftText"
@@ -258,15 +271,13 @@ async function loadMarket(){
                 Market Summary
             </h4>
 
-            <pre>
+            <ul>
 
-${JSON.stringify(
-    intel.summary,
-    null,
-    2
-)}
+${intel.summary.common_complaints
+.map(item=>`<li>${item}</li>`)
+.join("")}
 
-            </pre>
+</ul>
 
         </div>
 
@@ -381,4 +392,27 @@ function highlightEntities(
     )
 
     return text
+}
+
+
+async function escalateEmail(){
+
+    if(!currentEmailId){
+
+        alert(
+            "Email not loaded"
+        )
+
+        return
+    }
+
+    const result =
+    await apiPost(
+        `/escalate/${currentEmailId}`
+    )
+
+    alert(
+        result.status ||
+        "Escalated"
+    )
 }

@@ -1,29 +1,28 @@
 # app/intelligence/sentiment_summary.py
 def summarize_reviews(data):
 
-    themes = []
+    keywords = []
 
     for item in data:
 
-        if isinstance(item, list):
+        if item.get("status") == "success":
 
-            for source in item:
+            keywords.extend(
 
-                themes.extend(
-                source.get(
-                    "themes",
+                item.get(
+                    "content",
                     []
                 )
             )
 
-        elif item:
+    return {
 
-            themes.extend(
-            item.get(
-                "themes",
-                []
-            )
-        )
+        "total_sources":
+        len(data),
+
+        "content_found":
+        len(keywords)
+    }
 
     return {
 

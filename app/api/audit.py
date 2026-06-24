@@ -27,12 +27,33 @@ def audit(
         )
 
         return [
-            {
-                "id": log.id,
-                "action": log.action
-            }
-            for log in logs
-        ]
+
+    {
+
+        "id":log.id,
+
+        "entity_type":
+        log.entity_type,
+
+        "entity_id":
+        log.entity_id,
+
+        "action":
+        log.action,
+
+        "performed_by":
+        log.performed_by,
+
+        "timestamp":
+        log.timestamp,
+
+        "diff":
+        log.diff
+
+    }
+
+    for log in logs
+]
 
     except Exception as e:
 
